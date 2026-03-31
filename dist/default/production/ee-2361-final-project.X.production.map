@@ -65,10 +65,10 @@ Default Scalar Model: Small
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200               0x16a           0x21f  (543)
-.text                        0x36a               0x13a           0x1d7  (471)
-.dinit                       0x4a4                 0x8             0xc  (12)
+.text                        0x36a               0x13c           0x1da  (474)
+.dinit                       0x4a6                 0x8             0xc  (12)
 
-                 Total "program" memory used (bytes):          0x402  (1026) 1%
+                 Total "program" memory used (bytes):          0x405  (1029) 1%
 
 
 "data" Memory  [Origin = 0x800, Length = 0x2000]
@@ -111,7 +111,7 @@ External Symbols in Program Memory (by address):
                   0x0002c8                  __T3Interrupt
                   0x000364                  __DefaultInterrupt
                   0x00036a                  _main
-                  0x0003a4                  _setup
+                  0x0003a6                  _setup
 
 External Symbols in Program Memory (by name):
 
@@ -122,7 +122,7 @@ External Symbols in Program Memory (by name):
                   0x00023c                  __psv_init
                   0x000200                  __resetPRI
                   0x00036a                  _main
-                  0x0003a4                  _setup
+                  0x0003a6                  _setup
 
 Memory Configuration
 
@@ -840,10 +840,10 @@ __c30_signature
  .ivt._T3Interrupt
                   0x000024          0x2 build/default/production/main.o
 
-.text             0x00036a        0x13a
- .text            0x00036a        0x13a build/default/production/main.o
+.text             0x00036a        0x13c
+ .text            0x00036a        0x13c build/default/production/main.o
                   0x00036a                  _main
-                  0x0003a4                  _setup
+                  0x0003a6                  _setup
 
-.dinit            0x0004a4          0x8
- .dinit           0x0004a4          0x8 data_init
+.dinit            0x0004a6          0x8
+ .dinit           0x0004a6          0x8 data_init

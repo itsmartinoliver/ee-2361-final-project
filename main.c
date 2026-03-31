@@ -28,7 +28,7 @@ int main(void) {
         for (int i=100; i>-100; i--) {
             motorVector[0] = i;
             motorVector[1] = -i;
-            for (int j=0; j<10; j++); // Delay
+            for (int j=0; j<10000; j++); // Delay
         }
     }
     return;
