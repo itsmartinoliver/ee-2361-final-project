@@ -1,0 +1,4 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "coole160_motor_controller") (type "KiCad") (uri "${KIPRJMOD}/coole160_motor_controller.kicad_sym") (options "") (descr ""))
+)
