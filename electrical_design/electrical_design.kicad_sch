@@ -2237,6 +2237,12 @@
 		(uuid "18bf7fca-c9e5-4e75-841a-7f921e83fedf")
 	)
 	(junction
+		(at 41.91 27.94)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "36fec992-c324-435e-b237-235b73b28d44")
+	)
+	(junction
 		(at 30.48 161.29)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2676,6 +2682,16 @@
 	)
 	(wire
 		(pts
+			(xy 41.91 27.94) (xy 41.91 35.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "58de44d8-ed94-490d-9538-4b8188512f7f")
+	)
+	(wire
+		(pts
 			(xy 59.69 105.41) (xy 59.69 139.7)
 		)
 		(stroke
@@ -2836,13 +2852,23 @@
 	)
 	(wire
 		(pts
-			(xy 34.29 27.94) (xy 227.33 27.94)
+			(xy 34.29 27.94) (xy 41.91 27.94)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "7c684526-75ab-4094-8241-b23c9cb58251")
+	)
+	(wire
+		(pts
+			(xy 41.91 27.94) (xy 227.33 27.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7e126601-e8f6-42ff-995d-d4da050845bc")
 	)
 	(wire
 		(pts
@@ -3236,6 +3262,16 @@
 	)
 	(wire
 		(pts
+			(xy 41.91 46.99) (xy 41.91 43.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e1bbcb4d-29a0-4c5e-9187-1e916f96540b")
+	)
+	(wire
+		(pts
 			(xy 59.69 139.7) (xy 224.79 139.7)
 		)
 		(stroke
@@ -3273,6 +3309,16 @@
 			(type default)
 		)
 		(uuid "eb02f06a-211a-40f7-b0e5-12a97af62a88")
+	)
+	(wire
+		(pts
+			(xy 45.72 46.99) (xy 41.91 46.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f285a775-3cc1-4a63-b4b5-6e738ca65e7d")
 	)
 	(wire
 		(pts
@@ -4668,6 +4714,88 @@
 			(project "electrical_design"
 				(path "/3686bf86-00d7-4374-9d73-095afbe73533"
 					(reference "D4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_US")
+		(at 41.91 39.37 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e4666f33-476e-464b-80f1-557f20d73f4a")
+		(property "Reference" "R2"
+			(at 44.45 38.0999 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10k"
+			(at 44.45 40.6399 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 42.926 39.624 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 41.91 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor, US symbol"
+			(at 41.91 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c7d19868-1396-4cdd-8706-8686c2d1242f")
+		)
+		(pin "2"
+			(uuid "2e422f96-969c-46c9-b528-df9465d33ea2")
+		)
+		(instances
+			(project "electrical_design"
+				(path "/3686bf86-00d7-4374-9d73-095afbe73533"
+					(reference "R2")
 					(unit 1)
 				)
 			)

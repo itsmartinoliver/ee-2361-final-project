@@ -17,19 +17,16 @@
 
 void setup(void);
 
-volatile signed char motorVector[2] = {0, 0};
+volatile signed char motorVector[2] = {0, 0}; // Index 0 left motor
 volatile unsigned char distanceVector[3] = {0, 0, 0};
 
 int main(void) {
     setup();
     
     while (1) {
-        // Test motors
-        for (int i=100; i>-100; i--) {
-            motorVector[0] = i;
-            motorVector[1] = -i;
-            for (int j=0; j<10000; j++); // Delay
-        }
+        // This test doesn't seem to be working quite yet. <- TODO
+        motorVector[0] = distanceVector[0];
+        motorVector[1] = distanceVector[1];
     }
     return;
 }
@@ -94,6 +91,13 @@ void setup(void) {
         OC5RS = 6667; // 10 us pulse (TRIG)
         OC5CONbits.OCTSEL = 0; // Use Timer 2 for compare source
         OC5CONbits.OCM = 0b101; // Continuous Pulse Mode
+        
+    // Input capture for distance sensor ECHO
+        IEC0bits.IC1IE = 1; // Enable IC1 interrupt
+        // Input capture code modified from lab manual
+        IC1CON = 0; // Turn off and reset internal state of IC1
+        IC1CONbits.ICTMR = 1; // Use Timer 2 for capture source
+        IC1CONbits.ICM = 0b001; // Turn on and capture every edge (rising and falling)
     
     return;
 }
@@ -108,5 +112,18 @@ void __attribute__((interrupt, auto_psv)) _T3Interrupt() {
     OC2RS = ((!sR) * motorVector[1]) + (sR * (~motorVector[1] + 1)); // Use only magnitude
     PORTBbits.RB13 = sL; // APHASE
     PORTBbits.RB14 = sR; // BPHASE
+    return;
+}
+
+void __attribute__((__interrupt__, __auto_psv__)) _IC1Interrupt(void) // Relatively untested <- TODO
+{
+    _IC1IF = 0;
+    
+    int lastEdge = (IC1BUF >> 16) & 0xFFFF;
+    int thisEdge = IC1BUF & 0xFFFF;
+    
+    // Set the appropriate distanceVector index based on when the ECHO was received
+    distanceVector[ (thisEdge >= 3333 && thisEdge < 6666) + (2*(thisEdge >= 6666 && thisEdge < 9999)) ] = thisEdge-lastEdge;
+    
     return;
 }
