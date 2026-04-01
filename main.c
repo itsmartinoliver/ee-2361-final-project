@@ -17,8 +17,8 @@
 
 void setup(void);
 
-volatile signed char motorVector[2] = {0, 0}; // Index 0 left motor
-volatile unsigned char distanceVector[3] = {0, 0, 0};
+volatile signed int motorVector[2] = {0, 0}; // Index 0 left motor
+volatile unsigned int distanceVector[3] = {0, 0, 0};
 
 int main(void) {
     setup();
@@ -119,6 +119,7 @@ void __attribute__((__interrupt__, __auto_psv__)) _IC1Interrupt(void) // Relativ
 {
     _IC1IF = 0;
     
+    // Not the correct interpretation of IC1BUF <- TODO
     int lastEdge = (IC1BUF >> 16) & 0xFFFF;
     int thisEdge = IC1BUF & 0xFFFF;
     
