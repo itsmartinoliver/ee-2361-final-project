@@ -19,14 +19,17 @@ void setup(void);
 
 volatile signed int motorVector[2] = {0, 0}; // Index 0 left motor
 volatile unsigned int distanceVector[3] = {0, 0, 0};
+volatile unsigned int statusLED = 0;
 
 int main(void) {
     setup();
     
     while (1) {
-        // This test doesn't seem to be working quite yet. <- TODO
-        motorVector[0] = distanceVector[0];
-        motorVector[1] = distanceVector[1];
+        // Testing code
+        //motorVector[0] = (distanceVector[1]-450)*1;
+        //motorVector[1] = (distanceVector[1]-450)*1;
+        statusLED = TMR2 < distanceVector[1]*2;
+        PORTBbits.RB9 = statusLED;
     }
     return;
 }
@@ -97,7 +100,7 @@ void setup(void) {
         // Input capture code modified from lab manual
         IC1CON = 0; // Turn off and reset internal state of IC1
         IC1CONbits.ICTMR = 1; // Use Timer 2 for capture source
-        IC1CONbits.ICM = 0b001; // Turn on and capture every edge (rising and falling)
+        IC1CONbits.ICM = 0b010; // Turn on and capture every FALLING edge
     
     return;
 }
@@ -115,16 +118,16 @@ void __attribute__((interrupt, auto_psv)) _T3Interrupt() {
     return;
 }
 
-void __attribute__((__interrupt__, __auto_psv__)) _IC1Interrupt(void) // Relatively untested <- TODO
+void __attribute__((__interrupt__, __auto_psv__)) _IC1Interrupt(void)
 {
     _IC1IF = 0;
     
-    // Not the correct interpretation of IC1BUF <- TODO
-    int lastEdge = (IC1BUF >> 16) & 0xFFFF;
-    int thisEdge = IC1BUF & 0xFFFF;
+    int t = IC1BUF; // Capture time t
+    // Find index of distance sensor from which the signal was received
+    int i = (t > 3333 && t <= 6666) + (2*(t > 6666 && t <= 9999));
     
     // Set the appropriate distanceVector index based on when the ECHO was received
-    distanceVector[ (thisEdge >= 3333 && thisEdge < 6666) + (2*(thisEdge >= 6666 && thisEdge < 9999)) ] = thisEdge-lastEdge;
+    distanceVector[i] = t - (3333*i);
     
     return;
 }

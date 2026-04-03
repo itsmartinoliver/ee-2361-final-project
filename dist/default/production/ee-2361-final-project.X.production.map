@@ -64,20 +64,21 @@ Default Scalar Model: Small
 
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
-.text                        0x200               0x1ca           0x2af  (687)
-.text                        0x3ca               0x12a           0x1bf  (447)
-.dinit                       0x4f4                 0x8             0xc  (12)
+.text                        0x200               0x1b6           0x291  (657)
+.text                        0x3b6               0x13c           0x1da  (474)
+.dinit                       0x4f2                 0xe            0x15  (21)
 
-                 Total "program" memory used (bytes):          0x47a  (1146) 1%
+                 Total "program" memory used (bytes):          0x480  (1152) 1%
 
 
 "data" Memory  [Origin = 0x800, Length = 0x2000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-.bss                         0x800                   0             0x6  (6)
+.nbss                        0x800                   0             0x6  (6)
+.bss                         0x806                   0             0x6  (6)
 
-                 Total "data" memory used (bytes):            0x6  (6) <1%
+                 Total "data" memory used (bytes):            0xc  (12) <1%
 
 
 Dynamic Memory Usage
@@ -85,9 +86,9 @@ Dynamic Memory Usage
 region                     address                      maximum length  (dec)
 ------                     -------                      ---------------------
 heap                             0                                   0  (0)
-stack                        0x806                              0x1ffa  (8186)
+stack                        0x80c                              0x1ff4  (8180)
 
-                 Maximum dynamic memory (bytes):         0x1ffa  (8186)
+                 Maximum dynamic memory (bytes):         0x1ff4  (8180)
 
 Info: Project is using a large data memory model when small data memory model is sufficient.
 
@@ -95,12 +96,14 @@ Info: Project is using a large data memory model when small data memory model is
 External Symbols in Data Memory (by address):
 
                     0x0800                  _motorVector
-                    0x0802                  _distanceVector
+                    0x0804                  _statusLED
+                    0x0806                  _distanceVector
 
 External Symbols in Data Memory (by name):
 
-                    0x0802                  _distanceVector
+                    0x0806                  _distanceVector
                     0x0800                  _motorVector
+                    0x0804                  _statusLED
 
 External Symbols in Program Memory (by address):
 
@@ -109,22 +112,22 @@ External Symbols in Program Memory (by address):
                   0x000252                  __data_init
                   0x000252                  __data_init_standard
                   0x0002c8                  __T3Interrupt
-                  0x000364                  __IC1Interrupt
-                  0x0003c4                  __DefaultInterrupt
-                  0x0003ca                  _main
-                  0x0003e4                  _setup
+                  0x00034c                  __IC1Interrupt
+                  0x0003b0                  __DefaultInterrupt
+                  0x0003b6                  _main
+                  0x0003e2                  _setup
 
 External Symbols in Program Memory (by name):
 
-                  0x0003c4                  __DefaultInterrupt
-                  0x000364                  __IC1Interrupt
+                  0x0003b0                  __DefaultInterrupt
+                  0x00034c                  __IC1Interrupt
                   0x0002c8                  __T3Interrupt
                   0x000252                  __data_init
                   0x000252                  __data_init_standard
                   0x00023c                  __psv_init
                   0x000200                  __resetPRI
-                  0x0003ca                  _main
-                  0x0003e4                  _setup
+                  0x0003b6                  _main
+                  0x0003e2                  _setup
 
 Memory Configuration
 
@@ -161,7 +164,7 @@ LOAD c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libfx-elf.a
                   0x000002          0x2 SHORT 0x0 ((ABSOLUTE (__reset) >> 0x10) & 0x7f)
                   0x000003          0x2 SHORT 0x0
 
-.text             0x000200        0x1ca
+.text             0x000200        0x1b6
  *(.init)
  .init            0x000200         0x4c c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(crt0_standard.o)
                   0x000200                  __resetPRI
@@ -173,19 +176,19 @@ LOAD c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libfx-elf.a
  *(.user_init)
  *(.handle)
  *(.isr*)
- .isr.text        0x0002c8         0xfc build/default/production/main.o
+ .isr.text        0x0002c8         0xe8 build/default/production/main.o
                   0x0002c8                  __T3Interrupt
-                  0x000364                  __IC1Interrupt
- .isr             0x0003c4          0x4 default_isr
-                  0x0003c4                  __DefaultInterrupt
+                  0x00034c                  __IC1Interrupt
+ .isr             0x0003b0          0x4 default_isr
+                  0x0003b0                  __DefaultInterrupt
  *(.libc)
  *(.libm)
  *(.libdsp)
  *(.lib*)
  .libpic30_crt_start_mode
-                  0x0003c8          0x2 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(crt_start_mode_normal.Meo)
-                  0x0003c8                  __crt_start_mode
-                  0x0003c8                  __crt_start_mode_normal
+                  0x0003b4          0x2 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(crt_start_mode_normal.Meo)
+                  0x0003b4                  __crt_start_mode
+                  0x0003b4                  __crt_start_mode_normal
 
 usercode
  *(usercode)
@@ -199,26 +202,26 @@ __CONFIG1
 .comment
  *(.comment)
 
-.debug_info       0x000000       0x176c
+.debug_info       0x000000       0x1782
  *(.debug_info)
- .debug_info      0x000000       0x176c build/default/production/main.o
+ .debug_info      0x000000       0x1782 build/default/production/main.o
  *(.gnu.linkonce.wi.*)
 
 .debug_abbrev     0x000000        0x184
  *(.debug_abbrev)
  .debug_abbrev    0x000000        0x184 build/default/production/main.o
 
-.debug_line       0x000000        0x163
+.debug_line       0x000000        0x164
  *(.debug_line)
- .debug_line      0x000000        0x163 build/default/production/main.o
+ .debug_line      0x000000        0x164 build/default/production/main.o
 
 .debug_frame      0x000000         0xb0
  *(.debug_frame)
  .debug_frame     0x000000         0xb0 build/default/production/main.o
 
-.debug_str        0x000000         0xca
+.debug_str        0x000000         0xd4
  *(.debug_str)
- .debug_str       0x000000         0xca build/default/production/main.o
+ .debug_str       0x000000         0xd4 build/default/production/main.o
 
 .debug_loc
  *(.debug_loc)
@@ -227,10 +230,10 @@ __CONFIG1
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000         0x6b
+                  0x000000         0x79
  *(.debug_pubnames)
  .debug_pubnames
-                  0x000000         0x6b build/default/production/main.o
+                  0x000000         0x79 build/default/production/main.o
 
 .debug_ranges
  *(.debug_ranges)
@@ -841,10 +844,14 @@ __c30_signature
  __c30_signature
                   0x00021e          0x6 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(data_init_standard.o)
 
-.bss                0x0800          0x6
- .bss               0x0800          0x6 build/default/production/main.o
+.nbss               0x0800          0x6
+ .nbss              0x0800          0x6 build/default/production/main.o
                     0x0800                  _motorVector
-                    0x0802                  _distanceVector
+                    0x0804                  _statusLED
+
+.bss                0x0806          0x6
+ .bss               0x0806          0x6 build/default/production/main.o
+                    0x0806                  _distanceVector
 
 .config_JTAGEN    0x00abfe          0x2
  .config_JTAGEN
@@ -863,10 +870,10 @@ __c30_signature
  .ivt._IC1Interrupt
                   0x000016          0x2 build/default/production/main.o
 
-.text             0x0003ca        0x12a
- .text            0x0003ca        0x12a build/default/production/main.o
-                  0x0003ca                  _main
-                  0x0003e4                  _setup
+.text             0x0003b6        0x13c
+ .text            0x0003b6        0x13c build/default/production/main.o
+                  0x0003b6                  _main
+                  0x0003e2                  _setup
 
-.dinit            0x0004f4          0x8
- .dinit           0x0004f4          0x8 data_init
+.dinit            0x0004f2          0xe
+ .dinit           0x0004f2          0xe data_init
