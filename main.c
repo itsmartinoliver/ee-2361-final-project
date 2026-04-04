@@ -15,21 +15,22 @@
 
 #include "xc.h"
 
+const unsigned int SENSOR_PULSE_DELAY = 20000; // Delay between sonic pulses from distance sensors in microseconds
+
 void setup(void);
 
 volatile signed int motorVector[2] = {0, 0}; // Index 0 left motor
-volatile unsigned int distanceVector[3] = {0, 0, 0};
-volatile unsigned int statusLED = 0;
+volatile unsigned int distanceVector[3] = {0, 0, 0}; // Values go from ~2500 (very close) to ~4500 (somewhat far)
+volatile unsigned long int T3Cycles = 0;
 
 int main(void) {
     setup();
     
     while (1) {
-        // Testing code
-        //motorVector[0] = (distanceVector[1]-450)*1;
-        //motorVector[1] = (distanceVector[1]-450)*1;
-        statusLED = TMR2 < distanceVector[1]*2;
-        PORTBbits.RB9 = statusLED;
+        // Motor test. Does not appear to respect negative values. <-- TODO
+        motorVector[0] = (distanceVector[1] - 3500)*0.05;
+        motorVector[1] = (distanceVector[1] - 3500)*0.05;
+        PORTBbits.RB9 = distanceVector[1] < 3500;
     }
     return;
 }
@@ -48,14 +49,7 @@ void setup(void) {
     RPOR6bits.RP12R = 22;  // Use RPOR6 for RP12 (Output Compare 5)
     __builtin_write_OSCCONL(OSCCON | 0x40); // lock   PPS
     
-    // Timer 2 (distance sensors)
-        T2CONbits.TCKPS = 0b10; // PRE 1:64
-        TMR2 = 0;
-        _T2IF = 0;
-        PR2 = 9999;
-        T2CONbits.TON = 1; // Restart Timer 2
-    
-    // Timer 3 (motors)
+    // Timer 3
         T3CONbits.TCKPS = 0b01; // PRE 1:8
         TMR3 = 0;
         _T3IF = 0;
@@ -78,28 +72,27 @@ void setup(void) {
     
     // OC3, OC4, OC5 for distance sensors
         OC3CON = 0; // Disable OC3 for now
-        OC3R = 0;
-        OC3RS = 1; // 10 us pulse (TRIG)
-        OC3CONbits.OCTSEL = 0; // Use Timer 2 for compare source
+        OC3R = 89; // Trigger at the end of the clock period so that T3Cycles has time to update
+        OC3RS = 99; // 10 us pulse (TRIG)
+        OC3CONbits.OCTSEL = 1; // Use Timer 3 for compare source
         OC3CONbits.OCM = 0b101; // Continuous Pulse Mode
 
         OC4CON = 0; // Disable OC4 for now
-        OC4R = 3333;
-        OC4RS = 3334; // 10 us pulse (TRIG)
-        OC4CONbits.OCTSEL = 0; // Use Timer 2 for compare source
+        OC4R = 89; // Trigger at the end of the clock period so that T3Cycles has time to update
+        OC4RS = 99; // 10 us pulse (TRIG)
+        OC4CONbits.OCTSEL = 1; // Use Timer 3 for compare source
         OC4CONbits.OCM = 0b101; // Continuous Pulse Mode
 
         OC5CON = 0; // Disable OC5 for now
-        OC5R = 6666;
-        OC5RS = 6667; // 10 us pulse (TRIG)
-        OC5CONbits.OCTSEL = 0; // Use Timer 2 for compare source
+        OC5R = 89; // Trigger at the end of the clock period so that T3Cycles has time to update
+        OC5RS = 99; // 10 us pulse (TRIG)
+        OC5CONbits.OCTSEL = 1; // Use Timer 3 for compare source
         OC5CONbits.OCM = 0b101; // Continuous Pulse Mode
         
     // Input capture for distance sensor ECHO
         IEC0bits.IC1IE = 1; // Enable IC1 interrupt
-        // Input capture code modified from lab manual
         IC1CON = 0; // Turn off and reset internal state of IC1
-        IC1CONbits.ICTMR = 1; // Use Timer 2 for capture source
+        IC1CONbits.ICTMR = 0; // Use Timer 3 for capture source
         IC1CONbits.ICM = 0b010; // Turn on and capture every FALLING edge
     
     return;
@@ -107,6 +100,13 @@ void setup(void) {
 
 void __attribute__((interrupt, auto_psv)) _T3Interrupt() {
     _T3IF = 0;
+    T3Cycles++;
+    
+    // First: Set output compare enable bits for TRIG
+    unsigned long int norm = (100*T3Cycles) % (3*SENSOR_PULSE_DELAY); // This is the approximate current time being compared with the total delay period
+    OC3CONbits.OCM = 0b101 * (norm == 0);
+    OC4CONbits.OCM = 0b101 * (norm == SENSOR_PULSE_DELAY);
+    OC5CONbits.OCM = 0b101 * (norm == 2*SENSOR_PULSE_DELAY);
     
     // Update output compare values and xPHASE pins
     unsigned char sL = (motorVector[0] >> 15) & 0b1; // Use only sign
@@ -115,6 +115,7 @@ void __attribute__((interrupt, auto_psv)) _T3Interrupt() {
     OC2RS = ((!sR) * motorVector[1]) + (sR * (~motorVector[1] + 1)); // Use only magnitude
     PORTBbits.RB13 = sL; // APHASE
     PORTBbits.RB14 = sR; // BPHASE
+    
     return;
 }
 
@@ -122,12 +123,15 @@ void __attribute__((__interrupt__, __auto_psv__)) _IC1Interrupt(void)
 {
     _IC1IF = 0;
     
-    int t = IC1BUF; // Capture time t
+    unsigned long int t = IC1BUF + (100*T3Cycles); // Capture time t
+    unsigned long int rt = t % (3*SENSOR_PULSE_DELAY); // Find relative time rt
+    
     // Find index of distance sensor from which the signal was received
-    int i = (t > 3333 && t <= 6666) + (2*(t > 6666 && t <= 9999));
+    int i = (rt > SENSOR_PULSE_DELAY && rt <= 2*SENSOR_PULSE_DELAY) +
+            (2*(rt > 2*SENSOR_PULSE_DELAY && rt <= 3*SENSOR_PULSE_DELAY));
     
     // Set the appropriate distanceVector index based on when the ECHO was received
-    distanceVector[i] = t - (3333*i);
+    distanceVector[i] = rt - (SENSOR_PULSE_DELAY*i);
     
     return;
 }
