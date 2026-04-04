@@ -4555,7 +4555,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm"
 			(at 90.17 104.14 0)
 			(hide yes)
 			(show_name no)
@@ -5035,7 +5035,7 @@
 				)
 			)
 		)
-		(property "Footprint" "SPDIP28_300MC_MCH"
+		(property "Footprint" "Package_DIP:DIP-28_W7.62mm_Socket"
 			(at 45.72 46.99 0)
 			(hide yes)
 			(show_name no)
