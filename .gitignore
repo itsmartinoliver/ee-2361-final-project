@@ -1,0 +1,26 @@
+# --- MPLAB X Build & Output ---
+build/
+dist/
+debug/
+.generated_files/
+
+# --- IDE/Tooling Logs & Metadata ---
+*.log
+*.log.inx
+MPLABXLog.xml
+.cache/
+.clangd/
+
+# --- User-Specific / Local Settings ---
+nbproject/private/
+nbproject/Makefile-local-default.mk
+.nvim.lua
+
+# --- Language Server Artifacts ---
+compile_commands.json
+
+
+#Doxygen generated_files
+html/
+latex/
+
