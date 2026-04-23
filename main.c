@@ -15,22 +15,34 @@
 
 #include "xc.h"
 
+// ---------------- TUNABLE CONSTANTS ---------------- //
+const float x[6] = {0.05, 0.05, 0.00,
+                    0.00, 0.05, 0.05};
+
+const signed int p[3] = {2000, 3300, 2000};
+
 const unsigned int SENSOR_PULSE_DELAY = 20000; // Delay between sonic pulses from distance sensors in microseconds
+// --------------------------------------------------- //
 
 void setup(void);
 
 volatile signed int motorVector[2] = {0, 0}; // Index 0 left motor
-volatile unsigned int distanceVector[3] = {0, 0, 0}; // Values go from ~2500 (very close) to ~4500 (somewhat far)
+volatile signed int distanceVector[3] = {0, 0, 0}; // Values go from ~2500 (very close) to ~4500 (somewhat far)
 volatile unsigned long int T3Cycles = 0;
 
 int main(void) {
     setup();
     
     while (1) {
-        // Motor test. Does not appear to respect negative values. <-- TODO
-        motorVector[0] = (distanceVector[1] - 3500)*0.05;
-        motorVector[1] = (distanceVector[1] - 3500)*0.05;
-        PORTBbits.RB9 = distanceVector[1] < 3500;
+        motorVector[0] = (x[0]*(distanceVector[0]-p[0])) +
+                         (x[1]*(distanceVector[1]-p[1])) +
+                         (x[2]*(distanceVector[2]-p[2]));
+        
+        motorVector[1] = (x[3]*(distanceVector[0]-p[0])) +
+                         (x[4]*(distanceVector[1]-p[1])) +
+                         (x[5]*(distanceVector[2]-p[2]));
+        
+        //PORTBbits.RB9 = distanceVector[1] < 3500;
     }
     return;
 }
@@ -123,8 +135,8 @@ void __attribute__((__interrupt__, __auto_psv__)) _IC1Interrupt(void)
 {
     _IC1IF = 0;
     
-    unsigned long int t = IC1BUF + (100*T3Cycles); // Capture time t
-    unsigned long int rt = t % (3*SENSOR_PULSE_DELAY); // Find relative time rt
+    signed long int t = IC1BUF + (100*T3Cycles); // Capture time t
+    signed long int rt = t % (3*SENSOR_PULSE_DELAY); // Find relative time rt
     
     // Find index of distance sensor from which the signal was received
     int i = (rt > SENSOR_PULSE_DELAY && rt <= 2*SENSOR_PULSE_DELAY) +
