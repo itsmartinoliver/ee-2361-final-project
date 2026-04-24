@@ -10,6 +10,7 @@ debug/
 MPLABXLog.xml
 .cache/
 .clangd/
+.clangd
 
 # --- User-Specific / Local Settings ---
 nbproject/private/
