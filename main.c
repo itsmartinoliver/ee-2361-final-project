@@ -16,9 +16,11 @@
 #include "xc.h"
 
 // ---------------- TUNABLE CONSTANTS ---------------- //
-const float x[6] = {0.05, 0.05, 0.00,
-                    0.00, 0.05, 0.05};
+// Transformation matrix
+const float x[6] = { 0.05,  0.05,  0.00,
+                     0.00,  0.05,  0.05};
 
+// Offset vector
 const signed int p[3] = {2000, 3300, 2000};
 
 const unsigned int SENSOR_PULSE_DELAY = 20000; // Delay between sonic pulses from distance sensors in microseconds
@@ -41,8 +43,6 @@ int main(void) {
         motorVector[1] = (x[3]*(distanceVector[0]-p[0])) +
                          (x[4]*(distanceVector[1]-p[1])) +
                          (x[5]*(distanceVector[2]-p[2]));
-        
-        //PORTBbits.RB9 = distanceVector[1] < 3500;
     }
     return;
 }
@@ -60,6 +60,8 @@ void setup(void) {
     RPOR5bits.RP11R = 21;  // Use RPOR5 for RP11 (Output Compare 4)
     RPOR6bits.RP12R = 22;  // Use RPOR6 for RP12 (Output Compare 5)
     __builtin_write_OSCCONL(OSCCON | 0x40); // lock   PPS
+    
+    PORTBbits.RB9 = 1; // Turn on status LED to indicate program start
     
     // Timer 3
         T3CONbits.TCKPS = 0b01; // PRE 1:8
@@ -145,5 +147,6 @@ void __attribute__((__interrupt__, __auto_psv__)) _IC1Interrupt(void)
     // Set the appropriate distanceVector index based on when the ECHO was received
     distanceVector[i] = rt - (SENSOR_PULSE_DELAY*i);
     
+    PORTBbits.RB9 = 0; // Turn off status LED to indicate first distance measurement accomplished
     return;
 }
