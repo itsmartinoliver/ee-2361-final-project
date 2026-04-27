@@ -19,6 +19,9 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>main.c</itemPath>
+      <itemPath>pid.h</itemPath>
+      <itemPath>pid.c</itemPath>
+      <itemPath>time.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>

@@ -1,0 +1,18 @@
+CompileFlags:
+  Add: [
+    "-target", "msp430",
+    "-D__XC16__",
+    "-D__PIC24FJ64GA002__",
+    "-Dprog=",
+    "-D__prog__=",
+    "-D__pack__=",
+    "-D__interrupt__=",
+    "-D__section__(x)=",
+    "-Wno-unknown-pragmas",
+    "-I/opt/microchip/xc16/v2.10/support/PIC24F/h",
+    "-I/opt/microchip/xc16/v2.10/support/generic/h"
+  ]
+  Remove: [-mcpu=*, -mdfp=*, -mresource=*, -msmart-io=*, -msfr-warn=*, -omf=*]
+
+Diagnostics:
+  Suppress: ["drv_unsupported_opt_for_target", "drv_unknown_argument", "unknown_typename"]
